@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   Image,
+  Navigator,
   ScrollView,
   StyleSheet,
   Text,
@@ -42,11 +43,11 @@ class Screen_Home extends Component {
           suffered the burn?
         </Text>
         <Button text="Less than 3 hours"
-                onPress={() => console.log("Yay!!")}
+                onPress={() => this.props.switcher(screens.wash)}
                 callout = {true}>
         </Button>
         <Button text="3 hours or more"
-                onPress={() => console.log(":(")}/>
+                onPress={() => this.props.switcher(screens.degree)} />
       </View>
     );
   }
@@ -61,7 +62,7 @@ class Screen_Wash extends Component {
         </Text>
         <Image source={require('./img/wash.png')}/>
         <Button text="Done"
-                onPress={() => console.log("Done.")}
+                onPress={() => this.props.switcher(screens.timer)}
                 callout = {true}/>
       </View>
     );
@@ -71,7 +72,8 @@ class Screen_Wash extends Component {
 class Screen_Timer extends Component {
   constructor(props) {
     super(props);
-    this.state = {seconds: 11}; // thirty minutes
+    this.state = {seconds: 1800}; // thirty minutes
+    //TODO: deal with dismount
     setInterval(() => {
         if (this.state.seconds > 0) {
             this.setState({seconds: this.state.seconds - 1});
@@ -102,7 +104,7 @@ class Screen_Timer extends Component {
                        : " " + seconds + " seconds"}.
         </Text>
         <Button text = "Continue Data Collection"
-                onPress = {() => console.log("Continue")}
+                onPress={() => this.props.switcher(screens.degree)}
                 callout = {seconds == 0}/>
       </View>
     );
@@ -140,11 +142,37 @@ class Screen_Degree extends Component {
 
 class Burn extends Component {
     render() {
-      return(
-        <Screen_Degree></Screen_Degree>
-      );
+        return (
+            <Navigator
+                initialRoute={{screen: screens.home}}
+                renderScene={(route, navigator) => {
+                    var switcher = function(screen) {
+                        navigator.push({screen: screen});
+                    }
+                    switch(route.screen) {
+                        case screens.home:
+                            return <Screen_Home switcher={switcher} />;
+                        case screens.wash:
+                            return <Screen_Wash switcher={switcher} />;
+                        case screens.timer:
+                            return <Screen_Timer switcher={switcher} />;
+                        case screens.degree:
+                            return <Screen_Degree switcher={switcher} />;
+                        default:
+                            return <Screen_Home switcher={switcher} />;
+                    }
+                }}
+            />
+        );
     }
 }
+
+const screens = {
+    home: 'home',
+    wash: 'wash',
+    timer: 'timer',
+    degree: 'degree',
+};
 
 const styles = StyleSheet.create({
   container: {
