@@ -110,6 +110,15 @@ class Screen_Timer extends Component {
     );
   }
 }
+
+class Screen_Question extends Component {
+  render() {
+      return (<View>
+                <Text> What should appear on this screen? </Text>
+              </View>);
+  }
+}
+
 class Screen_Degree extends Component {
   render() {
     return (
@@ -122,17 +131,49 @@ class Screen_Degree extends Component {
                  source={require('./img/degree1.png')}/>
           <Button text="First Degree"
                  buttonStyle={styles.degreeButton}
-                 onPress = {() => console.log("Degree 1.")}/>
+                 onPress = {() => this.props.switcher(screens.question)}/>
           <Image style={styles.imageDegree}
                  source={require('./img/degree2.png')}/>
           <Button text="Second Degree"
                  buttonStyle={styles.degreeButton}
-                 onPress = {() => console.log("Degree 2.")}/>
+                 onPress = {() => this.props.switcher(screens.extent)}/>
           <Image style={styles.imageDegree}
                  source={require('./img/degree3.png')}/>
           <Button text="Third Degree"
                  buttonStyle={styles.degreeButton}
-                 onPress = {() => console.log("Degree 3.")}/>
+                 onPress = {() => this.props.switcher(screens.extent)}/>
+        </View>
+      </ScrollView>
+
+    );
+  }
+}
+
+class Screen_Extent extends Component {
+  constructor(props) {
+      super(props);
+      this.state = {selected: false};
+  }
+  text() {
+      if (this.state.selected)
+          return (<Button text="Those are all the parts that have suffered burns."
+                         onPress={() => this.props.switcher(screens.data)} />);
+      else
+          return (<Text> Please click everywhere there is burning. </Text>);
+  }
+  render() {
+    return (
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.headerNoMargin}>
+            Where is the burn?
+          </Text>
+          <TouchableHighlight
+            onPress={() => {this.setState({selected: true})}}>
+            <Image style={styles.timerImage}
+                   source={require('./img/diagram.png')}/>
+          </TouchableHighlight>
+          {this.text()}
         </View>
       </ScrollView>
 
@@ -152,12 +193,18 @@ class Burn extends Component {
                     switch(route.screen) {
                         case screens.home:
                             return <Screen_Home switcher={switcher} />;
-                        case screens.wash:
-                            return <Screen_Wash switcher={switcher} />;
-                        case screens.timer:
-                            return <Screen_Timer switcher={switcher} />;
+                        case screens.data:
+                            return <Screen_Data switcher={switcher} />;
                         case screens.degree:
                             return <Screen_Degree switcher={switcher} />;
+                        case screens.extent:
+                            return <Screen_Extent switcher={switcher} />;
+                        case screens.question:
+                            return <Screen_Question switcher={switcher} />;
+                        case screens.timer:
+                            return <Screen_Timer switcher={switcher} />;
+                        case screens.wash:
+                            return <Screen_Wash switcher={switcher} />;
                         default:
                             return <Screen_Home switcher={switcher} />;
                     }
@@ -169,9 +216,12 @@ class Burn extends Component {
 
 const screens = {
     home: 'home',
-    wash: 'wash',
-    timer: 'timer',
+    data: 'data',
     degree: 'degree',
+    extent: 'extent',
+    question: 'question',
+    timer: 'timer',
+    wash: 'wash',
 };
 
 const styles = StyleSheet.create({
@@ -205,7 +255,7 @@ const styles = StyleSheet.create({
   blueButton: {
     margin: 10,
     padding: 10,
-    backgroundColor: '#04B9E6'
+    backgroundColor: '#04B9E6',
   },
   blueButtonText: {
     fontSize: 14,
