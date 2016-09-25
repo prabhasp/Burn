@@ -12,6 +12,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableHighlight,
   View
 } from 'react-native';
@@ -113,9 +114,44 @@ class Screen_Timer extends Component {
 
 class Screen_Question extends Component {
   render() {
-      return (<View>
+      return (<View style={style.container}>
                 <Text> What should appear on this screen? </Text>
               </View>);
+  }
+}
+
+class Screen_Data extends Component {
+  render() {
+      return (
+        <ScrollView>
+          <Text style={styles.headerNoMargin}>
+            Patient Information
+          </Text>
+          <View style={styles.container}>
+            <View style={styles.inputRow}>
+                <Text> Name </Text>
+                <TextInput
+                    style={{height:40}}
+                    onChange={(text) => this.setState({name: text})} />
+            </View>
+            <View style={styles.inputRow}>
+                <Text> Phone # </Text>
+                <TextInput
+                    style={{height:40}}
+                    keyboardType='numeric'
+                    maxLength={10}
+                    onChange={(text) => this.setState({number: text})} />
+            </View>
+            <View style={styles.inputRow}>
+                <Text> Weight (kgs) </Text>
+                <TextInput
+                    style={{height:40}}
+                    keyboardType='numeric'
+                    onChange={(text) => this.setState({number: text})} />
+            </View>
+          </View>
+        </ScrollView>
+      );
   }
 }
 
@@ -241,6 +277,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+  },
+  inputRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'justify',
+    justifyContent: 'justify',
   },
   greyButton: {
     margin: 10,
